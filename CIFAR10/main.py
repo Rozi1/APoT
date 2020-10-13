@@ -13,7 +13,7 @@ from tensorboardX import SummaryWriter
 
 import torchvision
 import torchvision.transforms as transforms
-
+from torch.utils.tensorboard import SummaryWriter
 from models import *
 
 parser = argparse.ArgumentParser(description='PyTorch Cifar10 Training')
@@ -35,6 +35,7 @@ parser.add_argument('--bit', default=4, type=int, help='the bit-width of the qua
 best_prec = 0
 args = parser.parse_args()
 
+writer = SummaryWriter('runs/cifar10')
 def main():
 
     global args, best_prec
@@ -142,6 +143,7 @@ def main():
             'optimizer': optimizer.state_dict(),
         }, is_best, fdir)
 
+        
 
 class AverageMeter(object):
     """Computes and stores the average and current value"""
@@ -168,7 +170,34 @@ def train(trainloader, model, criterion, optimizer, epoch):
     top1 = AverageMeter()
 
     model.train()
-
+    for epoch in range(10):  
+    running_loss = 0.0
+    running_correct = 0
+    for data in (trainloader):
+        # get the images and labels
+        inputs, labels = data
+        # set the parameter gradients to zero
+        optimizer.zero_grad()
+        outputs = net(inputs)
+        loss = criterion(outputs, labels)
+        _, preds = torch.max(outputs.data, 1)
+        loss.backward()
+        # update the parameters
+        optimizer.step()
+        running_loss += loss.item()
+        running_correct += (preds == labels).sum().item()
+    # log the epoch loss
+    writer.add_scalar('training loss',
+                    running_loss/len(trainset),
+                    epoch)
+    # log the epoch accuracy
+    writer.add_scalar('training accuracy',
+                    running_correct/len(trainset),
+                    epoch)
+    
+    print(f"Epoch {epoch+1} train loss: {running_loss/len(trainset):.3f} train acc: {running_correct/len(trainset)}")
+ print('Finished Training')
+"""
     end = time.time()
     for i, (input, target) in enumerate(trainloader):
         # measure data loading time
@@ -204,7 +233,7 @@ def train(trainloader, model, criterion, optimizer, epoch):
                   'Prec {top1.val:.3f}% ({top1.avg:.3f}%)'.format(
                    epoch, i, len(trainloader), batch_time=batch_time,
                    data_time=data_time, loss=losses, top1=top1))
-
+"""
 def validate(val_loader, model, criterion):
     batch_time = AverageMeter()
     losses = AverageMeter()
