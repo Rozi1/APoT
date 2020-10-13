@@ -178,7 +178,7 @@ def train(trainloader, model, criterion, optimizer, epoch):
             inputs, labels = data
         # set the parameter gradients to zero
             optimizer.zero_grad()
-            outputs = net(inputs)
+            outputs = net(model)
             loss = criterion(outputs, labels)
             _, preds = torch.max(outputs.data, 1)
             loss.backward()
