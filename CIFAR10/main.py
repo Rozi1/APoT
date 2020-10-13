@@ -171,32 +171,32 @@ def train(trainloader, model, criterion, optimizer, epoch):
 
     model.train()
     for epoch in range(10):  
-    running_loss = 0.0
-    running_correct = 0
-    for data in (trainloader):
+        running_loss = 0.0
+        running_correct = 0
+        for data in (trainloader):
         # get the images and labels
-        inputs, labels = data
+            inputs, labels = data
         # set the parameter gradients to zero
-        optimizer.zero_grad()
-        outputs = net(inputs)
-        loss = criterion(outputs, labels)
-        _, preds = torch.max(outputs.data, 1)
-        loss.backward()
+            optimizer.zero_grad()
+            outputs = net(inputs)
+            loss = criterion(outputs, labels)
+            _, preds = torch.max(outputs.data, 1)
+            loss.backward()
         # update the parameters
-        optimizer.step()
-        running_loss += loss.item()
-        running_correct += (preds == labels).sum().item()
+            optimizer.step()
+            running_loss += loss.item()
+            running_correct += (preds == labels).sum().item()
     # log the epoch loss
-    writer.add_scalar('training loss',
+        writer.add_scalar('training loss',
                     running_loss/len(trainset),
                     epoch)
     # log the epoch accuracy
-    writer.add_scalar('training accuracy',
+        writer.add_scalar('training accuracy',
                     running_correct/len(trainset),
                     epoch)
     
-    print(f"Epoch {epoch+1} train loss: {running_loss/len(trainset):.3f} train acc: {running_correct/len(trainset)}")
- print('Finished Training')
+        print(f"Epoch {epoch+1} train loss: {running_loss/len(trainset):.3f} train acc: {running_correct/len(trainset)}")
+    print('Finished Training')
 """
     end = time.time()
     for i, (input, target) in enumerate(trainloader):
