@@ -90,6 +90,7 @@ def main():
 
     print('=> loading cifar10 data...')
     normalize = transforms.Normalize(mean=[0.491, 0.482, 0.447], std=[0.247, 0.243, 0.262])
+    transform = transforms.ToTensor()
     train_dataset = torchvision.datasets.MNIST(
         root='./data',
         train=True,
